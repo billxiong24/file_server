@@ -7,43 +7,33 @@ public class FileServerClient {
 
     public FileServerClient() {}
 
+    /**
+     * Makes request to server and saves response to file.
+     * @param url url to make GET request to
+     * @param filename name of file to save to
+     */
     public void makeRequest(String url, String filename) throws IOException {
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        URL urlObj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) urlObj.openConnection();
         con.setRequestMethod("GET");
         InputStream inputStream = con.getInputStream();
         FileOutputStream outputStream = new FileOutputStream(filename);
 
         int bytesRead;
         byte[] buffer = new byte[8192];
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
+        while ((bytesRead = inputStream.read(buffer)) > 0) {
             outputStream.write(buffer, 0, bytesRead);
         }
 
         outputStream.close();
         inputStream.close();
-    }
-
-    public void writeToFile(String filename, String buffer) throws IOException {
-        BufferedWriter out = null;
-        try {
-            FileWriter writer = new FileWriter(filename, false);
-            out = new BufferedWriter(writer);
-            out.write(buffer);
-        }
-        catch (IOException e) {
-            System.out.println("Error writing file.");
-        }
-        finally {
-            if(out != null) {
-                out.close();
-            }
-        }
+        con.disconnect();
     }
 
     public static void main(String args[]) throws Exception {
         FileServerClient client = new FileServerClient();
-        String url = "http://localhost:3000/file?file_name=sunrise.jpg";
+        //instead of sunrise.jpg, use your own file
+        String url = "http://localhost:3000/file?file_name=birdmountain.jpg";
         client.makeRequest(url, "test.jpg");
     }
 }
