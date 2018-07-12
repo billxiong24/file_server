@@ -9,6 +9,7 @@ router.get('/', function(req, res, next) {
 router.get('/file', function(req, res, next) {
     let file_name = req.query.file_name;
     var file_data = './' + file_name;
+    //sends binary data back to client...easy!
     res.download(file_data);
 });
 
